@@ -1,0 +1,17 @@
+importFrom(Rcpp,sourceCpp)
+useDynLib(stringfish, .registration=TRUE)
+export(
+"materialize",
+"sf_vector",
+"sf_assign",
+"get_string_type",
+"sf_iconv",
+"convert_to_sf",
+"sf_nchar",
+"sf_substr",
+"sf_paste",
+"sf_collapse",
+"sf_readLines",
+"sf_grepl",
+"sf_gsub",
+"random_strings")
