@@ -1,5 +1,5 @@
 138774467584feebd774d8ea674066b5 *ChangeLog
-a69583e1be90d16313cdb08bb67483cb *DESCRIPTION
+5284516487e70788c9440e69cff16909 *DESCRIPTION
 869f1ec8ff2c835e7011bca54f01732d *NAMESPACE
 cd8fb8c5b118873e4a0cc6525443d7ec *R/RcppExports.R
 adc9d6017f39a14e134830c595222587 *R/help_files.R
@@ -8,8 +8,8 @@ adc9d6017f39a14e134830c595222587 *R/help_files.R
 4343fb359c96f9b03c5db87238611d07 *README.md
 631c4ac15108fa40cf7463bff6bf5210 *build/vignette.rds
 6e6fbd4608a7a748d2311382dc52f0e6 *cleanup
-3c10790e22faecdb02660ee031a3e07e *configure
-b939cdbfc0f6cab6d600fdcf809e7734 *configure.ac
+9cb7f442a393c86888a836f6b7c6f01b *configure
+97d9dd52eadbf53851121aba0d3e8404 *configure.ac
 b1588d3bb4cb0e1f5a597d908f8c5b37 *inst/PCRE2_LICENSE.txt
 61965767f06fac28fb986b741832d8c2 *inst/doc/vignette.R
 7170cf72902f59efca2f1fceef7b07aa *inst/doc/vignette.html
