@@ -201,19 +201,38 @@ NULL
 #' @seealso readLines
 #' @examples 
 #' file <- tempfile()
-#' writeLines(letters, file)
+#' sf_writeLines(letters, file)
 #' sf_readLines(file)
 #' @name sf_readLines
 NULL
 
+#' sf_writeLines
+#' 
+#' A function that reads a file line by line
+#' @usage sf_writeLines(text, file, sep = "\n", na_value = "NA", encode_mode = "UTF-8")
+#' @param text A character to write to file
+#' @param file Name of the file to write to
+#' @param sep The line separator character(s)
+#' @param na_value What to write in case of a NA string
+#' @param encode_mode "UTF-8" or "byte". If "UTF-8", all strings are re-encoded as UTF-8. 
+#' @details 
+#' A function for writing text data using `std::ofstream`.
+#' @seealso writeLines
+#' @examples 
+#' file <- tempfile()
+#' sf_writeLines(letters, file)
+#' sf_readLines(file)
+#' @name sf_writeLines
+NULL
 
 #' sf_grepl
 #' 
 #' A function that matches patterns and returns a logical vector
-#' @usage sf_grepl(subject, pattern, encode_mode = "auto")
+#' @usage sf_grepl(subject, pattern, encode_mode = "auto", fixed = FALSE)
 #' @param subject The subject character vector to search
 #' @param pattern The pattern to search for
-#' @param encode_mode The encoding type to use (UTF-8, latin1, bytes, native or auto)
+#' @param encode_mode "auto", "UTF-8" or "byte". Determines multi-byte (UTF-8) characters or single-byte characters are used.
+#' @param fixed determines whether the pattern parameter should be interpreted literally or as a regular expression
 #' @return A logical vector with the same length as subject
 #' @details 
 #' The function uses the PCRE2 library, which is also used internally by R. 
@@ -232,11 +251,12 @@ NULL
 #' sf_gsub
 #' 
 #' A function that performs pattern substitution
-#' @usage sf_gsub(subject, pattern, replacement, encode_mode = "auto")
+#' @usage sf_gsub(subject, pattern, replacement, encode_mode = "auto", fixed = FALSE)
 #' @param subject The subject character vector to search
 #' @param pattern The pattern to search for
 #' @param replacement The replacement string
-#' @param encode_mode The encoding type to use (UTF-8, latin1, bytes, native or auto)
+#' @param encode_mode "auto", "UTF-8" or "byte". Determines multi-byte (UTF-8) characters or single-byte characters are used.
+#' @param fixed determines whether the pattern parameter should be interpreted literally or as a regular expression
 #' @return A stringfish vector of the replacement string
 #' @details 
 #' The function uses the PCRE2 library, which is also used internally by R. However, syntax may be slightly different. 
@@ -273,6 +293,130 @@ NULL
 #' set.seed(1)
 #' x <- random_strings(1e6, 80, "ACGT", vector_mode = "stringfish")
 #' @name random_strings
+NULL
+
+#' sf_toupper
+#' 
+#' A function converting a string to all uppercase
+#' @usage sf_toupper(x)
+#' @param x A character vector
+#' @return A stringfish vector where all lowercase is converted to uppercase
+#' @details 
+#' Note: the function only converts ASCII characters. 
+#' @seealso toupper
+#' @examples 
+#' x <- letters
+#' sf_toupper(x)
+#' @name sf_toupper
+NULL
+
+#' sf_tolower
+#' 
+#' A function converting a string to all lowercase
+#' @usage sf_tolower(x)
+#' @param x A character vector
+#' @return A stringfish vector where all uppercase is converted to lowercase
+#' @details 
+#' Note: the function only converts ASCII characters. 
+#' @seealso tolower
+#' @examples 
+#' x <- LETTERS
+#' sf_tolower(x)
+#' @name sf_tolower
+NULL
+
+
+#' sf_starts
+#' 
+#' A function for detecting a pattern at the start of a string
+#' @usage sf_starts(subject, pattern, ...)
+#' @param subject A character vector
+#' @param pattern A string to look for at the start
+#' @param ... Parameters passed to sf_grepl
+#' @return A logical vector true if there is a match, false if no match, NA is the subject was NA
+#' @seealso startsWith, sf_ends
+#' @examples 
+#' x <- c("alpha", "beta", "gamma", "delta", "epsilon")
+#' sf_starts(x, "a")
+#' @name sf_starts
+NULL
+
+#' sf_ends
+#' 
+#' A function for detecting a pattern at the end of a string
+#' @usage sf_ends(subject, pattern, ...)
+#' @param subject A character vector
+#' @param pattern A string to look for at the start
+#' @param ... Parameters passed to sf_grepl
+#' @return A logical vector true if there is a match, false if no match, NA is the subject was NA
+#' @seealso endsWith, sf_starts
+#' @examples 
+#' x <- c("alpha", "beta", "gamma", "delta", "epsilon")
+#' sf_ends(x, "a")
+#' @name sf_ends
+NULL
+
+#' sf_trim
+#' 
+#' A function to remove leading/trailing whitespace
+#' @usage sf_trim(subject, which = c("both", "left", "right"), whitespace = "[ \\\\t\\\\r\\\\n]", ...)
+#' @param subject A character vector
+#' @param which "both", "left", or "right" determines which white space is removed
+#' @param whitespace Whitespace characters (default: "[ \\\\t\\\\r\\\\n]")
+#' @param ... Parameters passed to sf_gsub
+#' @return A stringfish vector of trimmed whitespace
+#' @seealso trimws
+#' @examples 
+#' x <- c(" alpha ", " beta", " gamma ", "delta ", "epsilon ")
+#' sf_trim(x)
+#' @name sf_trim
+NULL
+
+#' sf_match
+#' 
+#' Returns a vector of the positions of x in table
+#' @usage sf_match(x, table)
+#' @param x A character vector to search for in table
+#' @param table A character vector to be matched against x
+#' @return An integer vector of the indicies of each x element's position in table
+#' @seealso match
+#' @details Note: similarly to the base R function, long "table" vectors are not supported. This is due to the maximum integer value that can be returned (`.Machine$integer.max`)
+#' @examples 
+#' sf_match("c", letters)
+#' @name sf_match
+NULL
+
+#' sf_split
+#' 
+#' A function to split strings by a delimiter
+#' @usage sf_split(subject, split, encode_mode = "auto", fixed = FALSE)
+#' @param subject A character vector
+#' @param split A delimiter to split the string by
+#' @param encode_mode "auto", "UTF-8" or "byte". Determines multi-byte (UTF-8) characters or single-byte characters are used.
+#' @param fixed determines whether the split parameter should be interpreted literally or as a regular expression
+#' @return A list of stringfish character vectors
+#' @seealso strsplit
+#' @examples 
+#' sf_split(datasets::state.name, "\\s") # split U.S. state names by any space character
+#' @name sf_split
+NULL
+
+
+#' string_identical
+#' 
+#' A stricter comparison of string equality
+#' @usage string_identical(x, y)
+#' @param x A character vector
+#' @param y Another character to compare to x
+#' @return TRUE if strings are identical, including encoding
+#' @seealso identical
+#' @examples 
+# x <- "fa\xE7ile"
+# Encoding(x) <- "latin1"
+# y <- iconv(x, "latin1", "UTF-8")
+# identical(x, y) # TRUE
+# string_identical(x, y) # FALSE
+#' @name string_identical
 NULL
 
 # not yet implemented:

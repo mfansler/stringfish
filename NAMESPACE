@@ -12,6 +12,15 @@ export(
 "sf_paste",
 "sf_collapse",
 "sf_readLines",
+"sf_writeLines",
 "sf_grepl",
 "sf_gsub",
-"random_strings")
+"random_strings",
+"sf_toupper",
+"sf_tolower",
+"sf_starts",
+"sf_ends",
+"sf_trim",
+"sf_split",
+"sf_match",
+"string_identical")

@@ -4,14 +4,16 @@
 \alias{sf_grepl}
 \title{sf_grepl}
 \usage{
-sf_grepl(subject, pattern, encode_mode = "auto")
+sf_grepl(subject, pattern, encode_mode = "auto", fixed = FALSE)
 }
 \arguments{
 \item{subject}{The subject character vector to search}
 
 \item{pattern}{The pattern to search for}
 
-\item{encode_mode}{The encoding type to use (UTF-8, latin1, bytes, native or auto)}
+\item{encode_mode}{"auto", "UTF-8" or "byte". Determines multi-byte (UTF-8) characters or single-byte characters are used.}
+
+\item{fixed}{determines whether the pattern parameter should be interpreted literally or as a regular expression}
 }
 \value{
 A logical vector with the same length as subject

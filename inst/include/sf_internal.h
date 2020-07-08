@@ -4,6 +4,7 @@
 #include <iostream>
 #include <string>
 #include <vector>
+#include <cstring>
 
 
 inline bool checkAscii(const void * ptr, size_t len) {
@@ -34,8 +35,17 @@ enum class cetype_t_ext : uint8_t {
   CE_BYTES   = 3,
   CE_SYMBOL  = 5, // this isn't actually used in getCharCE
   CE_ANY     = 99,
+  CE_ASCII   = 254, // IS_ASCII mark in defn.h
   CE_NA      = 255 // Easier to keep NA values here
 };
+
+// defn.h
+#define ASCII_MASK (1<<6)
+//#define IS_ASCII(x) ((x)->sxpinfo.gp & ASCII_MASK)
+inline bool IS_ASCII(SEXP x) {
+  return LEVELS(x) & ASCII_MASK;
+}
+
 
 // cetype_t getCharCE(SEXP x)
 // {
@@ -72,8 +82,8 @@ struct sfstring {
   std::string sdata;
   cetype_t_ext encoding;
   sfstring(std::string x, cetype_t enc) : sdata(x) {
-    if((enc == CE_NATIVE) || checkAscii(sdata.c_str(), sdata.size())) {
-      encoding = cetype_t_ext::CE_NATIVE; // to keep the same as R
+    if(checkAscii(sdata.c_str(), sdata.size())) {
+      encoding = cetype_t_ext::CE_ASCII; // to keep the same as R
     } else {
       encoding = static_cast<cetype_t_ext>(enc);
     }
@@ -81,29 +91,61 @@ struct sfstring {
   sfstring(const char * ptr, cetype_t enc) {
     size_t len = strlen(ptr);
     sdata = std::string(ptr);
-    if((enc == CE_NATIVE) || checkAscii(ptr, len)) {
-      encoding = cetype_t_ext::CE_NATIVE; // to keep the same as R
+    if(checkAscii(ptr, len)) {
+      encoding = cetype_t_ext::CE_ASCII; // to keep the same as R
     } else {
       encoding = static_cast<cetype_t_ext>(enc);
     }
   }
+  sfstring(const char * ptr, int len, cetype_t enc) {
+    sdata = std::string(ptr, len);
+    if(checkAscii(ptr, len)) {
+      encoding = cetype_t_ext::CE_ASCII; // to keep the same as R
+    } else {
+      encoding = static_cast<cetype_t_ext>(enc);
+    }
+  }
+  
+  // It's (probably ?) more efficient to serialize directly into object?
   sfstring(size_t size, cetype_t enc) {
     sdata = std::string();
     sdata.resize(size);
     encoding = static_cast<cetype_t_ext>(enc);
+  }
+  sfstring(size_t size) {
+    sdata = std::string();
+    sdata.resize(size);
   }
   sfstring(SEXP x) {
     if(x == NA_STRING) {
       encoding = cetype_t_ext::CE_NA;
     } else {
       sdata = std::string(CHAR(x));
-      encoding = static_cast<cetype_t_ext>(Rf_getCharCE(x));
+      if(checkAscii(sdata.c_str(), sdata.size())) {
+        encoding = cetype_t_ext::CE_ASCII;
+      } else {
+        encoding = static_cast<cetype_t_ext>(Rf_getCharCE(x));
+      }
     }
   }
-  sfstring() : sdata(""), encoding(cetype_t_ext::CE_NATIVE) {}
-  // constructor with no ascii check, when you are sure of the correct encoding
-  inline static sfstring nocheck(std::string x, cetype_t enc) {
-    return sfstring{x, enc};
+  sfstring() : sdata(""), encoding(cetype_t_ext::CE_ASCII) {}
+  bool check_if_native_is_ascii(cetype_t enc) {
+    if((enc == CE_NATIVE) && checkAscii(sdata.c_str(), sdata.size())) {
+      encoding = cetype_t_ext::CE_ASCII;
+      return true;
+    } else {
+      encoding = static_cast<cetype_t_ext>(enc);
+      return false;
+    }
+  }
+  bool check_if_ascii(cetype_t enc) {
+    if( checkAscii(sdata.c_str(), sdata.size()) ) {
+      encoding = cetype_t_ext::CE_ASCII;
+      return true;
+    } else {
+      encoding = static_cast<cetype_t_ext>(enc);;
+      return false;
+    }
   }
 };
 using sf_vec_data = std::vector<sfstring>;
@@ -140,7 +182,7 @@ class RStringIndexer {
 private:
   size_t len;
   rstring_type type;
-  void * dptr;
+  void * dptr; // should we use std::variant?
 public:
   struct rstring_info {
     const char * ptr;
@@ -149,6 +191,9 @@ public:
     rstring_info(const char * p, const int l, const cetype_t e) : ptr(p), len(l), enc(e) {}
     rstring_info() : ptr(nullptr), len(0), enc(CE_NATIVE) {}
     rstring_info(const rstring_info & other) : ptr(other.ptr), len(other.len), enc(other.enc) {}
+    bool operator==(const rstring_info & other) const {
+      return (strcmp(ptr, other.ptr) == 0) && (len == other.len) && (enc == other.enc);
+    }
   };
   class iterator {
   private:
@@ -171,13 +216,14 @@ public:
     type = get_rstring_type_internal(obj);
     switch(type) {
     case rstring_type::NORMAL:
+    case rstring_type::SF_VEC_MATERIALIZED:
       dptr = obj;
       len = Rf_xlength(obj);
       break;
-    case rstring_type::SF_VEC_MATERIALIZED:
     case rstring_type::OTHER_ALT_REP:
-      dptr = DATAPTR(obj); // should materialize the object if not already
-      len = Rf_xlength(reinterpret_cast<SEXP>(dptr));
+      ALTVEC_DATAPTR(obj); // should materialize the object if not already
+      dptr = obj;
+      len = Rf_xlength(obj);
       break;
     case rstring_type::SF_VEC:
       // sf_vec_data * ptr = reinterpret_cast<sf_vec_data*>(  );
@@ -186,6 +232,60 @@ public:
       break;
     default:
       throw std::runtime_error("incorrect RStringIndexer constructor");
+    }
+  }
+  bool is_NA(size_t i) const {
+    switch(type) {
+    case rstring_type::NORMAL:
+    case rstring_type::SF_VEC_MATERIALIZED:
+    case rstring_type::OTHER_ALT_REP:
+    {
+      SEXP xi = STRING_ELT(reinterpret_cast<SEXP>(dptr), i);
+      if(xi == NA_STRING) {
+        return true;
+      } else {
+        return false;
+      }
+    }
+    case rstring_type::SF_VEC:
+    {
+      sf_vec_data & sfp = *reinterpret_cast<sf_vec_data*>(dptr);
+      cetype_t_ext st = sfp[i].encoding;
+      if(st == cetype_t_ext::CE_NA) {
+        return true;
+      } else {
+        return false;
+      }
+    }
+    default:
+      throw std::runtime_error("is_NA error");
+    }
+  }
+  bool is_ASCII(size_t i) const {
+    switch(type) {
+    case rstring_type::NORMAL:
+    case rstring_type::SF_VEC_MATERIALIZED:
+    case rstring_type::OTHER_ALT_REP:
+    {
+      SEXP xi = STRING_ELT(reinterpret_cast<SEXP>(dptr), i);
+      if(IS_ASCII(xi)) {
+        return true;
+      } else {
+        return false;
+      }
+    }
+    case rstring_type::SF_VEC:
+    {
+      sf_vec_data & sfp = *reinterpret_cast<sf_vec_data*>(dptr);
+      cetype_t_ext st = sfp[i].encoding;
+      if(st == cetype_t_ext::CE_ASCII) {
+        return true;
+      } else {
+        return false;
+      }
+    }
+    default:
+      throw std::runtime_error("is_ASCII error");
     }
   }
   rstring_info getCharLenCE(size_t i) const {
@@ -206,6 +306,8 @@ public:
       cetype_t_ext st = sfp[i].encoding;
       if(st == cetype_t_ext::CE_NA) {
         return rstring_info(nullptr, 0, CE_NATIVE);
+      } else if(st == cetype_t_ext::CE_ASCII) {
+        return rstring_info(sfp[i].sdata.c_str(), sfp[i].sdata.size(), CE_NATIVE);
       }
       return rstring_info(sfp[i].sdata.c_str(), sfp[i].sdata.size(), static_cast<cetype_t>(sfp[i].encoding));
     }
@@ -235,6 +337,5 @@ inline int code_points(const char * p) {
   }
   return count;
 }
-
 
 #endif // end include guard
