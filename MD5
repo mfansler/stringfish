@@ -1,5 +1,5 @@
-27b9f4af468872d4f6c994e3231addfc *ChangeLog
-dea5477bb25b62e0ff94bba27a9c58ed *DESCRIPTION
+54526df9152d2992169ec4e6ca43b4c2 *ChangeLog
+f808dde025e0ab8574942ebb8cd1a094 *DESCRIPTION
 44c21fec94128dd5cc6e7c0a5658422a *NAMESPACE
 67ae983057735663805aa12ad1d10cf5 *R/RcppExports.R
 c60257096ebe157d4776c5dd1974a693 *R/help_files.R
@@ -8,11 +8,11 @@ c60257096ebe157d4776c5dd1974a693 *R/help_files.R
 a59cbe2f306e29c7133c9eda75755f53 *README.md
 631c4ac15108fa40cf7463bff6bf5210 *build/vignette.rds
 6e6fbd4608a7a748d2311382dc52f0e6 *cleanup
-a063592beabc495720d2c885870f4fd3 *configure
-5be147487b0a397062b1a28f7da577ec *configure.ac
+1cfdcde086f23371e5a9102d2fc42644 *configure
+8812dedf6e6ea1d134dac0891e063002 *configure.ac
 b1588d3bb4cb0e1f5a597d908f8c5b37 *inst/PCRE2_LICENSE.txt
 7dcb1f8dec4702da80ee889fcbba5ee5 *inst/doc/vignette.R
-eeab34318b7812e6b54ec476b5bcb411 *inst/doc/vignette.html
+811d3b831a783da1fb8ae825f97c547b *inst/doc/vignette.html
 1660bfec0febd98545f5d855e32eeee5 *inst/doc/vignette.rmd
 bdc213af0e6d65b4d2ed8895ed4fcfd9 *inst/include/sf_external.h
 a2f9b674f54adadbf3c231b0f3b5f808 *inst/include/sf_internal.h
@@ -111,9 +111,8 @@ b34a0dcdcfe61edce4fe1e1232437e93 *src/PCRE2/sljit/sljitNativeX86_common.c
 a1748e132059caa28ee8f8542a791dda *src/PCRE2/sljit/sljitUtils.c
 a33b1d58c0dffa8e2b918d9663041c4f *src/RcppExports.cpp
 9d7bcff49caa6ef9830f4cbc5ad73eb2 *src/sf_altrep.h
-8212c28f16b182fcae2b46ead521ef01 *src/sf_functions.cpp
-7f5ccd98637a3cccdb12c61fe31f2889 *src/xxhash/xxh3.h
+e67277750acfc85f6224368a807d3121 *src/sf_functions.cpp
 7c5ad14a1247a22141ed18a8d232dd51 *src/xxhash/xxhash.c
-8a27ec73e177bd3b1c16ed01123d7e3f *src/xxhash/xxhash.h
+4ac182f2118ed547aa447c9aac15664c *src/xxhash/xxhash.h
 c42554418bd5380f491ce5073683fd55 *vignettes/bench_v2.png
 1660bfec0febd98545f5d855e32eeee5 *vignettes/vignette.rmd
