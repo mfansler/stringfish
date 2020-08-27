@@ -1,4 +1,4 @@
-sf_paste <- function(..., sep="") {
+sf_paste <- function(..., sep="", nthreads=1) {
   if(!is.character(sep) || length(sep) != 1) {
     stop("sep should be a character vector of length 1")
   }
@@ -17,7 +17,15 @@ sf_paste <- function(..., sep="") {
       if(li != len) stop("All arguments should be the same length or length 1")
     }
   }
-  c_sf_paste(dots, sep)
+  c_sf_paste(dots, sep, nthreads)
+}
+
+sf_concat <- function(...) {
+  dots <- list(...)
+  for(i in seq_along(dots)) {
+    if(!is.character(dots[[i]])) dots[[i]] <- as.character(dots[[i]])
+  }
+  c_sf_concat(dots)
 }
 
 sf_starts <- function(subject, pattern, ...) {
@@ -55,3 +63,4 @@ string_identical <- function(x, y) {
   if(any(x[not_na] != y[not_na])) return(F)
   return(T)
 }
+

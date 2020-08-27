@@ -21,7 +21,7 @@ represent R objects using their own custom memory layout, completely
 invisible to the user. `stringfish` represents string data as a simple
 C++/STL vector, which is very fast andlightweight.
 
-Using normal R functions to process string data (e.g. `substr`, `gsub`,
+Using normal R functions to process string data (e.g. `substr`, `gsub`,
 `paste`, etc.) causes “materialization” of ALTREP vectors to normal R
 data, which can be a slow process. Therefore, in order to take full
 advantage of the ALTREP framework, string processing functions need to
@@ -41,6 +41,11 @@ a quick benchmark comparing `stringfish` and base R.
 
 ![](vignettes/bench_v2.png "bench_v2")
 
+Yes you are reading the graph correctly: some functions in `stringfish`
+are more than an order of magnitude faster than vectorized base R
+operations (and even faster with some build in multithreading). On large
+text datasets, this can turn minutes of computation into seconds.
+
 ## Currently implemented functions
 
 A list of implemented `stringfish` function and analogous base R
@@ -52,29 +57,49 @@ function:
   - `sf_paste` (`paste0`)
   - `sf_collapse` (`paste0`)
   - `sf_readLines` (`readLines`)
+  - `sf_writeLines` (`writeLines`)
   - `sf_grepl` (`grepl`)
   - `sf_gsub` (`gsub`)
   - `sf_toupper` (`toupper`)
   - `sf_tolower` (`tolower`)
+  - `sf_starts` (`startsWith`)
+  - `sf_ends` (`endsWith`)
+  - `sf_trim` (`trimws`)
+  - `sf_split` (`strsplit`)
+  - `sf_match` (`match` for strings only)
+  - `sf_compare`/`sf_equals` (`==`, ALTREP-aware string equality)
 
 Utility functions:
 
-  - `convert_to_sf` – converts a character vector to a `stringfish`
-    vector
+  - `sf_vector` – creates a new and empty `stringfish` vector
+  - `sf_assign` – assign strings into a `stringfish` vector in place
+    (like `x[i] <- "mystring"`)
+  - `sf_convert`/`convert_to_sf` – converts a character vector to a
+    `stringfish` vector
   - `get_string_type` – determines string type (whether ALTREP or
     normal)
   - `materialize` – converts any ALTREP object into a normal R object
-  - `new_sf_vec` – creates a new and empty `stringfish` vector
-  - `sf_random_strings` – creates a random strings as either a
-    `stringfish` or normal R vector
+  - `random_strings` – creates a random strings as either a `stringfish`
+    or normal R vector
+  - `string_identical` – like `identical` for strings but also requires
+    identical encoding (i.e. latin1 and UTF-8 strings will not match)
+
+In addition, many R operations in base R and other packages are already
+ALTREP-aware (i.e. they don’t cause materialization). Functions that
+subset or index into string vectors generally do not materialize.
+
+  - `sample`
+  - `head`
+  - `tail`
+  - `[` – e.g. `x[20:30]`
+  - `dplyr::filter` – e.g. `dplyr::filter(df, sf_starts("a"))`
+  - Etc.
 
 `stringfish` functions are not intended to exactly replicate their base
-R analogues. One systematic difference is `stringfish` does minimal
-encoding checks and no re-encoding. Therefore, to combine `latin1` and
-`UTF-8` encoded strings, first use `sf_iconv`. Another difference is
-that `subject` parameters are always the first argument, to be easier to
-use in pipes (`%>%`). E.g., `gsub(pattern, replacement, subject)`
-becomes `sf_gsub(subject ,pattern, replacement)`.
+R analogues. One difference is that `subject` parameters are always the
+first argument, which is easier to use with pipes (`%>%`). E.g.,
+`gsub(pattern, replacement, subject)` becomes `sf_gsub(subject, pattern,
+replacement)`.
 
 ## Extensibility
 
@@ -82,8 +107,8 @@ becomes `sf_gsub(subject ,pattern, replacement)`.
 Stringfish vectors can be worked into `Rcpp` scripts or even into other
 packages (see the `qs` package for an example).
 
-Below is a detailed `Rcpp` script example that creates a function to
-alternate upper and lower case of strings.
+Below is a detailed `Rcpp` script that creates a function to alternate
+upper and lower case of strings.
 
 ``` c
 // [[Rcpp::plugins(cpp11)]]
@@ -158,5 +183,5 @@ sf_alternate_case("hello world")
 
 ## To do
 
-  - Multithreading
   - Additional functions
+  - ICU library functions
