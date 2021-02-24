@@ -15,6 +15,15 @@
 <title>stringfish</title>
 
 
+<style type="text/css">
+  code{white-space: pre-wrap;}
+  span.smallcaps{font-variant: small-caps;}
+  span.underline{text-decoration: underline;}
+  div.column{display: inline-block; vertical-align: top; width: 50%;}
+  div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+  ul.task-list{list-style: none;}
+    </style>
+
 
 <style type="text/css">code{white-space: pre;}</style>
 <style type="text/css" data-origin="pandoc">
@@ -35,7 +44,7 @@ a.sourceLine { text-indent: -1em; padding-left: 1em; }
 pre.numberSource a.sourceLine
   { position: relative; left: -4em; }
 pre.numberSource a.sourceLine::before
-  { content: attr(data-line-number);
+  { content: attr(title);
     position: relative; left: -1em; text-align: right; vertical-align: baseline;
     border: none; pointer-events: all; display: inline-block;
     -webkit-touch-callout: none; -webkit-user-select: none;
@@ -102,6 +111,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
   }
 })();
 </script>
+
 
 
 
@@ -302,14 +312,14 @@ code > span.er { color: #a61717; background-color: #e3d2d2; }
 
 
 <!-- <img src="hex.png" width = "130" height = "150" align="right" style="border:0px;padding:15px"> -->
-<p><a href="https://travis-ci.org/traversc/stringfish"><img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI4MSIgaGVpZ2h0PSIyMCI+PGxpbmVhckdyYWRpZW50IGlkPSJhIiB4Mj0iMCIgeTI9IjEwMCUiPjxzdG9wIG9mZnNldD0iMCIgc3RvcC1jb2xvcj0iI2JiYiIgc3RvcC1vcGFjaXR5PSIuMSIvPjxzdG9wIG9mZnNldD0iMSIgc3RvcC1vcGFjaXR5PSIuMSIvPjwvbGluZWFyR3JhZGllbnQ+PHJlY3Qgcng9IjMiIHdpZHRoPSI4MSIgaGVpZ2h0PSIyMCIgZmlsbD0iIzU1NSIvPjxyZWN0IHJ4PSIzIiB4PSIzNyIgd2lkdGg9IjQ0IiBoZWlnaHQ9IjIwIiBmaWxsPSIjZTA1ZDQ0Ii8+PHBhdGggZmlsbD0iI2UwNWQ0NCIgZD0iTTM3IDBoNHYyMGgtNHoiLz48cmVjdCByeD0iMyIgd2lkdGg9IjgxIiBoZWlnaHQ9IjIwIiBmaWxsPSJ1cmwoI2EpIi8+PGcgZmlsbD0iI2ZmZiIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZm9udC1mYW1pbHk9IkRlamFWdSBTYW5zLFZlcmRhbmEsR2VuZXZhLHNhbnMtc2VyaWYiIGZvbnQtc2l6ZT0iMTEiPjx0ZXh0IHg9IjE5LjUiIHk9IjE1IiBmaWxsPSIjMDEwMTAxIiBmaWxsLW9wYWNpdHk9Ii4zIj5idWlsZDwvdGV4dD48dGV4dCB4PSIxOS41IiB5PSIxNCI+YnVpbGQ8L3RleHQ+PHRleHQgeD0iNTgiIHk9IjE1IiBmaWxsPSIjMDEwMTAxIiBmaWxsLW9wYWNpdHk9Ii4zIj5mYWlsaW5nPC90ZXh0Pjx0ZXh0IHg9IjU4IiB5PSIxNCI+ZmFpbGluZzwvdGV4dD48L2c+PC9zdmc+" alt="Build Status" /></a> <a href="https://cran.r-project.org/package=stringfish"><img src="data:image/svg+xml; charset=utf-8;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI5MSIgaGVpZ2h0PSIyMCI+CiAgPGxpbmVhckdyYWRpZW50IGlkPSJiIiB4Mj0iMCIgeTI9IjEwMCUiPgogICAgPHN0b3Agb2Zmc2V0PSIwIiBzdG9wLWNvbG9yPSIjYmJiIiBzdG9wLW9wYWNpdHk9Ii4xIi8+CiAgICA8c3RvcCBvZmZzZXQ9IjEiIHN0b3Atb3BhY2l0eT0iLjEiLz4KICA8L2xpbmVhckdyYWRpZW50PgogIDxtYXNrIGlkPSJhIj4KICAgIDxyZWN0IHdpZHRoPSI5MSIgaGVpZ2h0PSIyMCIgcng9IjMiIGZpbGw9IiNmZmYiLz4KICA8L21hc2s+CiAgPGcgbWFzaz0idXJsKCNhKSI+CiAgICA8cGF0aCBmaWxsPSIjNTU1IiBkPSJNMCAwaDQzdjIwSDB6Ii8+CiAgICA8cGF0aCBmaWxsPSIjNGMxIiBkPSJNNDMgMGg2OXYyMEg0M3oiLz4KICAgIDxwYXRoIGZpbGw9InVybCgjYikiIGQ9Ik0wIDBoOTF2MjBIMHoiLz4KICA8L2c+CiAgPGcgZmlsbD0iI2ZmZiIgdGV4dC1hbmNob3I9Im1pZGRsZSIKICAgICBmb250LWZhbWlseT0iRGVqYVZ1IFNhbnMsVmVyZGFuYSxHZW5ldmEsc2Fucy1zZXJpZiIgZm9udC1zaXplPSIxMSI+CiAgICA8dGV4dCB4PSIyMS41IiB5PSIxNSIgZmlsbD0iIzAxMDEwMSIgZmlsbC1vcGFjaXR5PSIuMyI+CiAgICAgIENSQU4KICAgIDwvdGV4dD4KICAgIDx0ZXh0IHg9IjIxLjUiIHk9IjE0Ij4KICAgICAgQ1JBTgogICAgPC90ZXh0PgogICAgPHRleHQgeD0iNjYiIHk9IjE1IiBmaWxsPSIjMDEwMTAxIiBmaWxsLW9wYWNpdHk9Ii4zIj4KICAgICAgMC4xNC4xCiAgICA8L3RleHQ+CiAgICA8dGV4dCB4PSI2NiIgeT0iMTQiPgogICAgICAwLjE0LjEKICAgIDwvdGV4dD4KICA8L2c+Cjwvc3ZnPg==" alt="CRAN_Status_Badge" /></a> <a href="https://cran.r-project.org/package=stringfish"><img src="data:image/svg+xml; charset=utf-8;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxNDkiIGhlaWdodD0iMjAiPgogIDxsaW5lYXJHcmFkaWVudCBpZD0iYiIgeDI9IjAiIHkyPSIxMDAlIj4KICAgIDxzdG9wIG9mZnNldD0iMCIgc3RvcC1jb2xvcj0iI2JiYiIgc3RvcC1vcGFjaXR5PSIuMSIvPgogICAgPHN0b3Agb2Zmc2V0PSIxIiBzdG9wLW9wYWNpdHk9Ii4xIi8+CiAgPC9saW5lYXJHcmFkaWVudD4KICA8bWFzayBpZD0iYSI+CiAgICA8cmVjdCB3aWR0aD0iMTQ5IiBoZWlnaHQ9IjIwIiByeD0iMyIgZmlsbD0iI2ZmZiIvPgogIDwvbWFzaz4KICA8ZyBtYXNrPSJ1cmwoI2EpIj48cGF0aCBmaWxsPSIjNTU1IiBkPSJNMCAwaDcwdjIwSDB6Ii8+CiAgICA8cGF0aCBmaWxsPSIjMDA3ZWM2IiBkPSJNNzAgMGg3OXYyMEg3MHoiLz4KICAgIDxwYXRoIGZpbGw9InVybCgjYikiIGQ9Ik0wIDBoMTQ5djIwSDB6Ii8+CiAgPC9nPgogIDxnIGZpbGw9IiNmZmYiIHRleHQtYW5jaG9yPSJtaWRkbGUiCiAgICAgZm9udC1mYW1pbHk9IkRlamFWdSBTYW5zLFZlcmRhbmEsR2VuZXZhLHNhbnMtc2VyaWYiIGZvbnQtc2l6ZT0iMTEiPgogICAgPHRleHQgeD0iMzYiIHk9IjE1IiBmaWxsPSIjMDEwMTAxIiBmaWxsLW9wYWNpdHk9Ii4zIj4KICAgICAgZG93bmxvYWRzCiAgICA8L3RleHQ+CiAgICA8dGV4dCB4PSIzNiIgeT0iMTQiPgogICAgICBkb3dubG9hZHMKICAgIDwvdGV4dD4KICAgIDx0ZXh0IHg9IjEwOC41IiB5PSIxNSIgZmlsbD0iIzAxMDEwMSIgZmlsbC1vcGFjaXR5PSIuMyI+CiAgICAgIDI5MzcvbW9udGgKICAgIDwvdGV4dD4KICAgIDx0ZXh0IHg9IjEwOC41IiB5PSIxNCI+CiAgICAgIDI5MzcvbW9udGgKICAgIDwvdGV4dD4KICA8L2c+Cjwvc3ZnPg==" alt="CRAN_Downloads_Badge" /></a> <a href="https://cran.r-project.org/package=stringfish"><img src="data:image/svg+xml; charset=utf-8;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxMDgiIGhlaWdodD0iMjAiPgogIDxsaW5lYXJHcmFkaWVudCBpZD0iYiIgeDI9IjAiIHkyPSIxMDAlIj4KICAgIDxzdG9wIG9mZnNldD0iMCIgc3RvcC1jb2xvcj0iI2JiYiIgc3RvcC1vcGFjaXR5PSIuMSIvPgogICAgPHN0b3Agb2Zmc2V0PSIxIiBzdG9wLW9wYWNpdHk9Ii4xIi8+CiAgPC9saW5lYXJHcmFkaWVudD4KICA8bWFzayBpZD0iYSI+CiAgICA8cmVjdCB3aWR0aD0iMTA4IiBoZWlnaHQ9IjIwIiByeD0iMyIgZmlsbD0iI2ZmZiIvPgogIDwvbWFzaz4KICA8ZyBtYXNrPSJ1cmwoI2EpIj48cGF0aCBmaWxsPSIjNTU1IiBkPSJNMCAwaDcwdjIwSDB6Ii8+CiAgICA8cGF0aCBmaWxsPSIjMDA3ZWM2IiBkPSJNNzAgMGgzOHYyMEg3MHoiLz4KICAgIDxwYXRoIGZpbGw9InVybCgjYikiIGQ9Ik0wIDBoMTA4djIwSDB6Ii8+CiAgPC9nPgogIDxnIGZpbGw9IiNmZmYiIHRleHQtYW5jaG9yPSJtaWRkbGUiCiAgICAgZm9udC1mYW1pbHk9IkRlamFWdSBTYW5zLFZlcmRhbmEsR2VuZXZhLHNhbnMtc2VyaWYiIGZvbnQtc2l6ZT0iMTEiPgogICAgPHRleHQgeD0iMzYiIHk9IjE1IiBmaWxsPSIjMDEwMTAxIiBmaWxsLW9wYWNpdHk9Ii4zIj4KICAgICAgZG93bmxvYWRzCiAgICA8L3RleHQ+CiAgICA8dGV4dCB4PSIzNiIgeT0iMTQiPgogICAgICBkb3dubG9hZHMKICAgIDwvdGV4dD4KICAgIDx0ZXh0IHg9Ijg4IiB5PSIxNSIgZmlsbD0iIzAxMDEwMSIgZmlsbC1vcGFjaXR5PSIuMyI+CiAgICAgIDEySwogICAgPC90ZXh0PgogICAgPHRleHQgeD0iODgiIHk9IjE0Ij4KICAgICAgMTJLCiAgICA8L3RleHQ+CiAgPC9nPgo8L3N2Zz4=" alt="CRAN_Downloads_Total_Badge" /></a></p>
+<p><a href="https://travis-ci.org/traversc/stringfish"><img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI5NyIgaGVpZ2h0PSIyMCI+PGxpbmVhckdyYWRpZW50IGlkPSJhIiB4Mj0iMCIgeTI9IjEwMCUiPjxzdG9wIG9mZnNldD0iMCIgc3RvcC1jb2xvcj0iI2JiYiIgc3RvcC1vcGFjaXR5PSIuMSIvPjxzdG9wIG9mZnNldD0iMSIgc3RvcC1vcGFjaXR5PSIuMSIvPjwvbGluZWFyR3JhZGllbnQ+PHJlY3Qgcng9IjMiIHdpZHRoPSI5NyIgaGVpZ2h0PSIyMCIgZmlsbD0iIzU1NSIvPjxyZWN0IHJ4PSIzIiB4PSIzNyIgd2lkdGg9IjYwIiBoZWlnaHQ9IjIwIiBmaWxsPSIjOWY5ZjlmIi8+PHBhdGggZmlsbD0iIzlmOWY5ZiIgZD0iTTM3IDBoNHYyMGgtNHoiLz48cmVjdCByeD0iMyIgd2lkdGg9Ijk3IiBoZWlnaHQ9IjIwIiBmaWxsPSJ1cmwoI2EpIi8+PGcgZmlsbD0iI2ZmZiIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZm9udC1mYW1pbHk9IkRlamFWdSBTYW5zLFZlcmRhbmEsR2VuZXZhLHNhbnMtc2VyaWYiIGZvbnQtc2l6ZT0iMTEiPjx0ZXh0IHg9IjE5LjUiIHk9IjE1IiBmaWxsPSIjMDEwMTAxIiBmaWxsLW9wYWNpdHk9Ii4zIj5idWlsZDwvdGV4dD48dGV4dCB4PSIxOS41IiB5PSIxNCI+YnVpbGQ8L3RleHQ+PHRleHQgeD0iNjYiIHk9IjE1IiBmaWxsPSIjMDEwMTAxIiBmaWxsLW9wYWNpdHk9Ii4zIj5jYW5jZWxlZDwvdGV4dD48dGV4dCB4PSI2NiIgeT0iMTQiPmNhbmNlbGVkPC90ZXh0PjwvZz48L3N2Zz4=" alt="Build Status" /></a> <a href="https://cran.r-project.org/package=stringfish"><img src="data:image/svg+xml; charset=utf-8;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI5MSIgaGVpZ2h0PSIyMCI+CiAgPGxpbmVhckdyYWRpZW50IGlkPSJiIiB4Mj0iMCIgeTI9IjEwMCUiPgogICAgPHN0b3Agb2Zmc2V0PSIwIiBzdG9wLWNvbG9yPSIjYmJiIiBzdG9wLW9wYWNpdHk9Ii4xIi8+CiAgICA8c3RvcCBvZmZzZXQ9IjEiIHN0b3Atb3BhY2l0eT0iLjEiLz4KICA8L2xpbmVhckdyYWRpZW50PgogIDxtYXNrIGlkPSJhIj4KICAgIDxyZWN0IHdpZHRoPSI5MSIgaGVpZ2h0PSIyMCIgcng9IjMiIGZpbGw9IiNmZmYiLz4KICA8L21hc2s+CiAgPGcgbWFzaz0idXJsKCNhKSI+CiAgICA8cGF0aCBmaWxsPSIjNTU1IiBkPSJNMCAwaDQzdjIwSDB6Ii8+CiAgICA8cGF0aCBmaWxsPSIjNGMxIiBkPSJNNDMgMGg2OXYyMEg0M3oiLz4KICAgIDxwYXRoIGZpbGw9InVybCgjYikiIGQ9Ik0wIDBoOTF2MjBIMHoiLz4KICA8L2c+CiAgPGcgZmlsbD0iI2ZmZiIgdGV4dC1hbmNob3I9Im1pZGRsZSIKICAgICBmb250LWZhbWlseT0iRGVqYVZ1IFNhbnMsVmVyZGFuYSxHZW5ldmEsc2Fucy1zZXJpZiIgZm9udC1zaXplPSIxMSI+CiAgICA8dGV4dCB4PSIyMS41IiB5PSIxNSIgZmlsbD0iIzAxMDEwMSIgZmlsbC1vcGFjaXR5PSIuMyI+CiAgICAgIENSQU4KICAgIDwvdGV4dD4KICAgIDx0ZXh0IHg9IjIxLjUiIHk9IjE0Ij4KICAgICAgQ1JBTgogICAgPC90ZXh0PgogICAgPHRleHQgeD0iNjYiIHk9IjE1IiBmaWxsPSIjMDEwMTAxIiBmaWxsLW9wYWNpdHk9Ii4zIj4KICAgICAgMC4xNC4yCiAgICA8L3RleHQ+CiAgICA8dGV4dCB4PSI2NiIgeT0iMTQiPgogICAgICAwLjE0LjIKICAgIDwvdGV4dD4KICA8L2c+Cjwvc3ZnPg==" alt="CRAN_Status_Badge" /></a> <a href="https://cran.r-project.org/package=stringfish"><img src="data:image/svg+xml; charset=utf-8;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxNDkiIGhlaWdodD0iMjAiPgogIDxsaW5lYXJHcmFkaWVudCBpZD0iYiIgeDI9IjAiIHkyPSIxMDAlIj4KICAgIDxzdG9wIG9mZnNldD0iMCIgc3RvcC1jb2xvcj0iI2JiYiIgc3RvcC1vcGFjaXR5PSIuMSIvPgogICAgPHN0b3Agb2Zmc2V0PSIxIiBzdG9wLW9wYWNpdHk9Ii4xIi8+CiAgPC9saW5lYXJHcmFkaWVudD4KICA8bWFzayBpZD0iYSI+CiAgICA8cmVjdCB3aWR0aD0iMTQ5IiBoZWlnaHQ9IjIwIiByeD0iMyIgZmlsbD0iI2ZmZiIvPgogIDwvbWFzaz4KICA8ZyBtYXNrPSJ1cmwoI2EpIj48cGF0aCBmaWxsPSIjNTU1IiBkPSJNMCAwaDcwdjIwSDB6Ii8+CiAgICA8cGF0aCBmaWxsPSIjMDA3ZWM2IiBkPSJNNzAgMGg3OXYyMEg3MHoiLz4KICAgIDxwYXRoIGZpbGw9InVybCgjYikiIGQ9Ik0wIDBoMTQ5djIwSDB6Ii8+CiAgPC9nPgogIDxnIGZpbGw9IiNmZmYiIHRleHQtYW5jaG9yPSJtaWRkbGUiCiAgICAgZm9udC1mYW1pbHk9IkRlamFWdSBTYW5zLFZlcmRhbmEsR2VuZXZhLHNhbnMtc2VyaWYiIGZvbnQtc2l6ZT0iMTEiPgogICAgPHRleHQgeD0iMzYiIHk9IjE1IiBmaWxsPSIjMDEwMTAxIiBmaWxsLW9wYWNpdHk9Ii4zIj4KICAgICAgZG93bmxvYWRzCiAgICA8L3RleHQ+CiAgICA8dGV4dCB4PSIzNiIgeT0iMTQiPgogICAgICBkb3dubG9hZHMKICAgIDwvdGV4dD4KICAgIDx0ZXh0IHg9IjEwOC41IiB5PSIxNSIgZmlsbD0iIzAxMDEwMSIgZmlsbC1vcGFjaXR5PSIuMyI+CiAgICAgIDM5NTYvbW9udGgKICAgIDwvdGV4dD4KICAgIDx0ZXh0IHg9IjEwOC41IiB5PSIxNCI+CiAgICAgIDM5NTYvbW9udGgKICAgIDwvdGV4dD4KICA8L2c+Cjwvc3ZnPg==" alt="CRAN_Downloads_Badge" /></a> <a href="https://cran.r-project.org/package=stringfish"><img src="data:image/svg+xml; charset=utf-8;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxMDgiIGhlaWdodD0iMjAiPgogIDxsaW5lYXJHcmFkaWVudCBpZD0iYiIgeDI9IjAiIHkyPSIxMDAlIj4KICAgIDxzdG9wIG9mZnNldD0iMCIgc3RvcC1jb2xvcj0iI2JiYiIgc3RvcC1vcGFjaXR5PSIuMSIvPgogICAgPHN0b3Agb2Zmc2V0PSIxIiBzdG9wLW9wYWNpdHk9Ii4xIi8+CiAgPC9saW5lYXJHcmFkaWVudD4KICA8bWFzayBpZD0iYSI+CiAgICA8cmVjdCB3aWR0aD0iMTA4IiBoZWlnaHQ9IjIwIiByeD0iMyIgZmlsbD0iI2ZmZiIvPgogIDwvbWFzaz4KICA8ZyBtYXNrPSJ1cmwoI2EpIj48cGF0aCBmaWxsPSIjNTU1IiBkPSJNMCAwaDcwdjIwSDB6Ii8+CiAgICA8cGF0aCBmaWxsPSIjMDA3ZWM2IiBkPSJNNzAgMGgzOHYyMEg3MHoiLz4KICAgIDxwYXRoIGZpbGw9InVybCgjYikiIGQ9Ik0wIDBoMTA4djIwSDB6Ii8+CiAgPC9nPgogIDxnIGZpbGw9IiNmZmYiIHRleHQtYW5jaG9yPSJtaWRkbGUiCiAgICAgZm9udC1mYW1pbHk9IkRlamFWdSBTYW5zLFZlcmRhbmEsR2VuZXZhLHNhbnMtc2VyaWYiIGZvbnQtc2l6ZT0iMTEiPgogICAgPHRleHQgeD0iMzYiIHk9IjE1IiBmaWxsPSIjMDEwMTAxIiBmaWxsLW9wYWNpdHk9Ii4zIj4KICAgICAgZG93bmxvYWRzCiAgICA8L3RleHQ+CiAgICA8dGV4dCB4PSIzNiIgeT0iMTQiPgogICAgICBkb3dubG9hZHMKICAgIDwvdGV4dD4KICAgIDx0ZXh0IHg9Ijg4IiB5PSIxNSIgZmlsbD0iIzAxMDEwMSIgZmlsbC1vcGFjaXR5PSIuMyI+CiAgICAgIDMxSwogICAgPC90ZXh0PgogICAgPHRleHQgeD0iODgiIHk9IjE0Ij4KICAgICAgMzFLCiAgICA8L3RleHQ+CiAgPC9nPgo8L3N2Zz4=" alt="CRAN_Downloads_Total_Badge" /></a></p>
 <p><code>stringfish</code> is a framework for performing string and sequence operations using the ALTREP system to speed up the comptuation of common string operations.</p>
 <p>The ultimate goal of the package is to unify ALTREP string implementations under a common framework.</p>
 <p>The ALTREP system (new as of R 3.5.0) allows package developers to represent R objects using their own custom memory layout, completely invisible to the user. <code>stringfish</code> represents string data as a simple C++/STL vector, which is very fast andlightweight.</p>
-<p>Using normal R functions to process string data (e.g. <code>substr</code>, <code>gsub</code>, <code>paste</code>, etc.) causes “materialization” of ALTREP vectors to normal R data, which can be a slow process. Therefore, in order to take full advantage of the ALTREP framework, string processing functions need to be re-written to be ALTREP aware. This package hopes to fulfill that purpose.</p>
+<p>Using normal R functions to process string data (e.g. <code>substr</code>, <code>gsub</code>, <code>paste</code>, etc.) causes “materialization” of ALTREP vectors to normal R data, which can be a slow process. Therefore, in order to take full advantage of the ALTREP framework, string processing functions need to be re-written to be ALTREP aware. This package hopes to fulfill that purpose.</p>
 <div id="installation" class="section level2">
 <h2>Installation:</h2>
-<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb1-1" data-line-number="1"><span class="kw">install.packages</span>(<span class="st">&quot;stringfish&quot;</span>)</a></code></pre></div>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb1-1" title="1"><span class="kw">install.packages</span>(<span class="st">&quot;stringfish&quot;</span>, <span class="dt">type=</span><span class="st">&quot;source&quot;</span>, <span class="dt">configure.args=</span><span class="st">&quot;--with-simd=AVX2&quot;</span>)</a></code></pre></div>
 </div>
 <div id="benchmark" class="section level2">
 <h2>Benchmark</h2>
@@ -354,8 +364,8 @@ code > span.er { color: #a61717; background-color: #e3d2d2; }
 <li><code>sample</code></li>
 <li><code>head</code></li>
 <li><code>tail</code></li>
-<li><code>[</code> – e.g. <code>x[20:30]</code></li>
-<li><code>dplyr::filter</code> – e.g. <code>dplyr::filter(df, sf_starts(&quot;a&quot;))</code></li>
+<li><code>[</code> – e.g. <code>x[20:30]</code></li>
+<li><code>dplyr::filter</code> – e.g. <code>dplyr::filter(df, sf_starts(&quot;a&quot;))</code></li>
 <li>Etc.</li>
 </ul>
 <p><code>stringfish</code> functions are not intended to exactly replicate their base R analogues. One difference is that <code>subject</code> parameters are always the first argument, which is easier to use with pipes (<code>%&gt;%</code>). E.g., <code>gsub(pattern, replacement, subject)</code> becomes <code>sf_gsub(subject, pattern, replacement)</code>.</p>
@@ -364,70 +374,70 @@ code > span.er { color: #a61717; background-color: #e3d2d2; }
 <h2>Extensibility</h2>
 <p><code>stringfish</code> as a framework is intended to be easily extensible. Stringfish vectors can be worked into <code>Rcpp</code> scripts or even into other packages (see the <code>qs</code> package for an example).</p>
 <p>Below is a detailed <code>Rcpp</code> script that creates a function to alternate upper and lower case of strings.</p>
-<div class="sourceCode" id="cb2"><pre class="sourceCode c"><code class="sourceCode c"><a class="sourceLine" id="cb2-1" data-line-number="1"><span class="co">// [[Rcpp::plugins(cpp11)]]</span></a>
-<a class="sourceLine" id="cb2-2" data-line-number="2"><span class="co">// [[Rcpp::depends(stringfish)]]</span></a>
-<a class="sourceLine" id="cb2-3" data-line-number="3"><span class="pp">#include </span><span class="im">&lt;Rcpp.h&gt;</span></a>
-<a class="sourceLine" id="cb2-4" data-line-number="4"><span class="pp">#include </span><span class="im">&quot;sf_external.h&quot;</span></a>
-<a class="sourceLine" id="cb2-5" data-line-number="5">using namespace Rcpp;</a>
-<a class="sourceLine" id="cb2-6" data-line-number="6"></a>
-<a class="sourceLine" id="cb2-7" data-line-number="7"><span class="co">// [[Rcpp::export]]</span></a>
-<a class="sourceLine" id="cb2-8" data-line-number="8">SEXP sf_alternate_case(SEXP x) {</a>
-<a class="sourceLine" id="cb2-9" data-line-number="9">  <span class="co">// Iterate through a character vector using the RStringIndexer class</span></a>
-<a class="sourceLine" id="cb2-10" data-line-number="10">  <span class="co">// If the input vector x is a stringfish character vector it will do so without materialization</span></a>
-<a class="sourceLine" id="cb2-11" data-line-number="11">  RStringIndexer r(x);</a>
-<a class="sourceLine" id="cb2-12" data-line-number="12">  <span class="dt">size_t</span> len = r.size();</a>
-<a class="sourceLine" id="cb2-13" data-line-number="13">  </a>
-<a class="sourceLine" id="cb2-14" data-line-number="14">  <span class="co">// Create an output stringfish vector</span></a>
-<a class="sourceLine" id="cb2-15" data-line-number="15">  <span class="co">// Like all R objects, it must be protected from garbage collection</span></a>
-<a class="sourceLine" id="cb2-16" data-line-number="16">  SEXP output = PROTECT(sf_vector(len));</a>
-<a class="sourceLine" id="cb2-17" data-line-number="17">  </a>
-<a class="sourceLine" id="cb2-18" data-line-number="18">  <span class="co">// Obtain a reference to the underlying output data</span></a>
-<a class="sourceLine" id="cb2-19" data-line-number="19">  sf_vec_data &amp; output_data = sf_vec_data_ref(output);</a>
-<a class="sourceLine" id="cb2-20" data-line-number="20">  </a>
-<a class="sourceLine" id="cb2-21" data-line-number="21">  <span class="co">// You can use range based for loop via an iterator class that returns RStringIndexer::rstring_info e</span></a>
-<a class="sourceLine" id="cb2-22" data-line-number="22">  <span class="co">// rstring info is a struct containing const char * ptr (null terminated), int len, and cetype_t enc</span></a>
-<a class="sourceLine" id="cb2-23" data-line-number="23">  <span class="co">// a NA string is represented by a nullptr</span></a>
-<a class="sourceLine" id="cb2-24" data-line-number="24">  <span class="co">// Alternatively, access the data via the function r.getCharLenCE(i)</span></a>
-<a class="sourceLine" id="cb2-25" data-line-number="25">  <span class="dt">size_t</span> i = <span class="dv">0</span>;</a>
-<a class="sourceLine" id="cb2-26" data-line-number="26">  <span class="cf">for</span>(<span class="dt">auto</span> e : r) {</a>
-<a class="sourceLine" id="cb2-27" data-line-number="27">    <span class="co">// check if string is NA and go to next if it is</span></a>
-<a class="sourceLine" id="cb2-28" data-line-number="28">    <span class="cf">if</span>(e.ptr == nullptr) {</a>
-<a class="sourceLine" id="cb2-29" data-line-number="29">      i++; <span class="co">// increment output index</span></a>
-<a class="sourceLine" id="cb2-30" data-line-number="30">      <span class="cf">continue</span>;</a>
-<a class="sourceLine" id="cb2-31" data-line-number="31">    }</a>
-<a class="sourceLine" id="cb2-32" data-line-number="32">    <span class="co">// create a temporary output string and process the results</span></a>
-<a class="sourceLine" id="cb2-33" data-line-number="33">    std::string temp(e.len, '\<span class="dv">0</span>');</a>
-<a class="sourceLine" id="cb2-34" data-line-number="34">    <span class="dt">bool</span> case_switch = false;</a>
-<a class="sourceLine" id="cb2-35" data-line-number="35">    <span class="cf">for</span>(<span class="dt">int</span> j=<span class="dv">0</span>; j&lt;e.len; j++) {</a>
-<a class="sourceLine" id="cb2-36" data-line-number="36">      <span class="cf">if</span>((e.ptr[j] &gt;= <span class="dv">65</span>) &amp; (e.ptr[j] &lt;= <span class="dv">90</span>)) { <span class="co">// char j is upper case</span></a>
-<a class="sourceLine" id="cb2-37" data-line-number="37">        <span class="cf">if</span>((case_switch = !case_switch)) { <span class="co">// check if we should convert to lower case</span></a>
-<a class="sourceLine" id="cb2-38" data-line-number="38">          temp[j] = e.ptr[j] + <span class="dv">32</span>;</a>
-<a class="sourceLine" id="cb2-39" data-line-number="39">          <span class="cf">continue</span>;</a>
-<a class="sourceLine" id="cb2-40" data-line-number="40">        }</a>
-<a class="sourceLine" id="cb2-41" data-line-number="41">      } <span class="cf">else</span> <span class="cf">if</span>((e.ptr[j] &gt;= <span class="dv">97</span>) &amp; (e.ptr[j] &lt;= <span class="dv">122</span>)) { <span class="co">// char j is lower case</span></a>
-<a class="sourceLine" id="cb2-42" data-line-number="42">        <span class="cf">if</span>(!(case_switch = !case_switch)) { <span class="co">// check if we should convert to upper case</span></a>
-<a class="sourceLine" id="cb2-43" data-line-number="43">          temp[j] = e.ptr[j] - <span class="dv">32</span>;</a>
-<a class="sourceLine" id="cb2-44" data-line-number="44">          <span class="cf">continue</span>;</a>
-<a class="sourceLine" id="cb2-45" data-line-number="45">        }</a>
-<a class="sourceLine" id="cb2-46" data-line-number="46">      } <span class="cf">else</span> <span class="cf">if</span>(e.ptr[j] == <span class="dv">32</span>) {</a>
-<a class="sourceLine" id="cb2-47" data-line-number="47">        case_switch = false;</a>
-<a class="sourceLine" id="cb2-48" data-line-number="48">      }</a>
-<a class="sourceLine" id="cb2-49" data-line-number="49">      temp[j] = e.ptr[j];</a>
-<a class="sourceLine" id="cb2-50" data-line-number="50">    }</a>
-<a class="sourceLine" id="cb2-51" data-line-number="51">    </a>
-<a class="sourceLine" id="cb2-52" data-line-number="52">    <span class="co">// Create a new vector element sfstring and insert the processed string into the stringfish vector</span></a>
-<a class="sourceLine" id="cb2-53" data-line-number="53">    <span class="co">// sfstring has three constructors, 1) taking a std::string and encoding, </span></a>
-<a class="sourceLine" id="cb2-54" data-line-number="54">    <span class="co">// 2) a char pointer and encoding, or 3) a CHARSXP object (e.g. sfstring(NA_STRING))</span></a>
-<a class="sourceLine" id="cb2-55" data-line-number="55">    output_data[i] = sfstring(temp, e.enc);</a>
-<a class="sourceLine" id="cb2-56" data-line-number="56">    i++; <span class="co">// increment output index</span></a>
-<a class="sourceLine" id="cb2-57" data-line-number="57">  }</a>
-<a class="sourceLine" id="cb2-58" data-line-number="58">  <span class="co">// Finally, call unprotect and return result</span></a>
-<a class="sourceLine" id="cb2-59" data-line-number="59">  UNPROTECT(<span class="dv">1</span>);</a>
-<a class="sourceLine" id="cb2-60" data-line-number="60">  <span class="cf">return</span> output;</a>
-<a class="sourceLine" id="cb2-61" data-line-number="61">}</a></code></pre></div>
+<div class="sourceCode" id="cb2"><pre class="sourceCode c"><code class="sourceCode c"><a class="sourceLine" id="cb2-1" title="1"><span class="co">// [[Rcpp::plugins(cpp11)]]</span></a>
+<a class="sourceLine" id="cb2-2" title="2"><span class="co">// [[Rcpp::depends(stringfish)]]</span></a>
+<a class="sourceLine" id="cb2-3" title="3"><span class="pp">#include </span><span class="im">&lt;Rcpp.h&gt;</span></a>
+<a class="sourceLine" id="cb2-4" title="4"><span class="pp">#include </span><span class="im">&quot;sf_external.h&quot;</span></a>
+<a class="sourceLine" id="cb2-5" title="5">using namespace Rcpp;</a>
+<a class="sourceLine" id="cb2-6" title="6"></a>
+<a class="sourceLine" id="cb2-7" title="7"><span class="co">// [[Rcpp::export]]</span></a>
+<a class="sourceLine" id="cb2-8" title="8">SEXP sf_alternate_case(SEXP x) {</a>
+<a class="sourceLine" id="cb2-9" title="9">  <span class="co">// Iterate through a character vector using the RStringIndexer class</span></a>
+<a class="sourceLine" id="cb2-10" title="10">  <span class="co">// If the input vector x is a stringfish character vector it will do so without materialization</span></a>
+<a class="sourceLine" id="cb2-11" title="11">  RStringIndexer r(x);</a>
+<a class="sourceLine" id="cb2-12" title="12">  <span class="dt">size_t</span> len = r.size();</a>
+<a class="sourceLine" id="cb2-13" title="13">  </a>
+<a class="sourceLine" id="cb2-14" title="14">  <span class="co">// Create an output stringfish vector</span></a>
+<a class="sourceLine" id="cb2-15" title="15">  <span class="co">// Like all R objects, it must be protected from garbage collection</span></a>
+<a class="sourceLine" id="cb2-16" title="16">  SEXP output = PROTECT(sf_vector(len));</a>
+<a class="sourceLine" id="cb2-17" title="17">  </a>
+<a class="sourceLine" id="cb2-18" title="18">  <span class="co">// Obtain a reference to the underlying output data</span></a>
+<a class="sourceLine" id="cb2-19" title="19">  sf_vec_data &amp; output_data = sf_vec_data_ref(output);</a>
+<a class="sourceLine" id="cb2-20" title="20">  </a>
+<a class="sourceLine" id="cb2-21" title="21">  <span class="co">// You can use range based for loop via an iterator class that returns RStringIndexer::rstring_info e</span></a>
+<a class="sourceLine" id="cb2-22" title="22">  <span class="co">// rstring info is a struct containing const char * ptr (null terminated), int len, and cetype_t enc</span></a>
+<a class="sourceLine" id="cb2-23" title="23">  <span class="co">// a NA string is represented by a nullptr</span></a>
+<a class="sourceLine" id="cb2-24" title="24">  <span class="co">// Alternatively, access the data via the function r.getCharLenCE(i)</span></a>
+<a class="sourceLine" id="cb2-25" title="25">  <span class="dt">size_t</span> i = <span class="dv">0</span>;</a>
+<a class="sourceLine" id="cb2-26" title="26">  <span class="cf">for</span>(<span class="dt">auto</span> e : r) {</a>
+<a class="sourceLine" id="cb2-27" title="27">    <span class="co">// check if string is NA and go to next if it is</span></a>
+<a class="sourceLine" id="cb2-28" title="28">    <span class="cf">if</span>(e.ptr == nullptr) {</a>
+<a class="sourceLine" id="cb2-29" title="29">      i++; <span class="co">// increment output index</span></a>
+<a class="sourceLine" id="cb2-30" title="30">      <span class="cf">continue</span>;</a>
+<a class="sourceLine" id="cb2-31" title="31">    }</a>
+<a class="sourceLine" id="cb2-32" title="32">    <span class="co">// create a temporary output string and process the results</span></a>
+<a class="sourceLine" id="cb2-33" title="33">    std::string temp(e.len, &#39;\<span class="dv">0</span><span class="er">&#39;</span>);</a>
+<a class="sourceLine" id="cb2-34" title="34">    <span class="dt">bool</span> case_switch = false;</a>
+<a class="sourceLine" id="cb2-35" title="35">    <span class="cf">for</span>(<span class="dt">int</span> j=<span class="dv">0</span>; j&lt;e.len; j++) {</a>
+<a class="sourceLine" id="cb2-36" title="36">      <span class="cf">if</span>((e.ptr[j] &gt;= <span class="dv">65</span>) &amp; (e.ptr[j] &lt;= <span class="dv">90</span>)) { <span class="co">// char j is upper case</span></a>
+<a class="sourceLine" id="cb2-37" title="37">        <span class="cf">if</span>((case_switch = !case_switch)) { <span class="co">// check if we should convert to lower case</span></a>
+<a class="sourceLine" id="cb2-38" title="38">          temp[j] = e.ptr[j] + <span class="dv">32</span>;</a>
+<a class="sourceLine" id="cb2-39" title="39">          <span class="cf">continue</span>;</a>
+<a class="sourceLine" id="cb2-40" title="40">        }</a>
+<a class="sourceLine" id="cb2-41" title="41">      } <span class="cf">else</span> <span class="cf">if</span>((e.ptr[j] &gt;= <span class="dv">97</span>) &amp; (e.ptr[j] &lt;= <span class="dv">122</span>)) { <span class="co">// char j is lower case</span></a>
+<a class="sourceLine" id="cb2-42" title="42">        <span class="cf">if</span>(!(case_switch = !case_switch)) { <span class="co">// check if we should convert to upper case</span></a>
+<a class="sourceLine" id="cb2-43" title="43">          temp[j] = e.ptr[j] - <span class="dv">32</span>;</a>
+<a class="sourceLine" id="cb2-44" title="44">          <span class="cf">continue</span>;</a>
+<a class="sourceLine" id="cb2-45" title="45">        }</a>
+<a class="sourceLine" id="cb2-46" title="46">      } <span class="cf">else</span> <span class="cf">if</span>(e.ptr[j] == <span class="dv">32</span>) {</a>
+<a class="sourceLine" id="cb2-47" title="47">        case_switch = false;</a>
+<a class="sourceLine" id="cb2-48" title="48">      }</a>
+<a class="sourceLine" id="cb2-49" title="49">      temp[j] = e.ptr[j];</a>
+<a class="sourceLine" id="cb2-50" title="50">    }</a>
+<a class="sourceLine" id="cb2-51" title="51">    </a>
+<a class="sourceLine" id="cb2-52" title="52">    <span class="co">// Create a new vector element sfstring and insert the processed string into the stringfish vector</span></a>
+<a class="sourceLine" id="cb2-53" title="53">    <span class="co">// sfstring has three constructors, 1) taking a std::string and encoding, </span></a>
+<a class="sourceLine" id="cb2-54" title="54">    <span class="co">// 2) a char pointer and encoding, or 3) a CHARSXP object (e.g. sfstring(NA_STRING))</span></a>
+<a class="sourceLine" id="cb2-55" title="55">    output_data[i] = sfstring(temp, e.enc);</a>
+<a class="sourceLine" id="cb2-56" title="56">    i++; <span class="co">// increment output index</span></a>
+<a class="sourceLine" id="cb2-57" title="57">  }</a>
+<a class="sourceLine" id="cb2-58" title="58">  <span class="co">// Finally, call unprotect and return result</span></a>
+<a class="sourceLine" id="cb2-59" title="59">  UNPROTECT(<span class="dv">1</span>);</a>
+<a class="sourceLine" id="cb2-60" title="60">  <span class="cf">return</span> output;</a>
+<a class="sourceLine" id="cb2-61" title="61">}</a></code></pre></div>
 <p>Example function call:</p>
-<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb3-1" data-line-number="1"><span class="kw">sf_alternate_case</span>(<span class="st">&quot;hello world&quot;</span>) </a>
-<a class="sourceLine" id="cb3-2" data-line-number="2">[<span class="dv">1</span>] <span class="st">&quot;hElLo wOrLd&quot;</span></a></code></pre></div>
+<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb3-1" title="1"><span class="kw">sf_alternate_case</span>(<span class="st">&quot;hello world&quot;</span>) </a>
+<a class="sourceLine" id="cb3-2" title="2">[<span class="dv">1</span>] <span class="st">&quot;hElLo wOrLd&quot;</span></a></code></pre></div>
 </div>
 <div id="to-do" class="section level2">
 <h2>To do</h2>
