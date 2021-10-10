@@ -1,37 +1,32 @@
-AC_INIT(stringfish, 0.13.2 traversc@gmail.com)
+AC_INIT([stringfish],[0.13.2 traversc@gmail.com])
 AC_PATH_PROG([PKGCONF],[pkg-config],[],[$PATH:/usr/local/bin:ext/bin:ext:/sw/bin:/opt/bin:/opt/local/bin])
 
 echo "stringfish configure script"
 ########################################################
 ### Predefined compile strings for different cases
 
-ADD_LIBS="-L."
+ADD_LIBS=""
 INCLUDE_PATHS=""
-ADD_CFLAGS=""
-PCRE2_SHLIB=""
-PCRE2_CLEAN=""
+LIBPCRE2=""
+PCRE2_BUNDLED=""
 
 ########################################################
 ### Configure args
 
 AC_ARG_WITH([pcre2-force-compile],
-            AC_HELP_STRING([--with-pcre2-force-compile],
-                           [Force compilation of bundled pcre2 source files]),
+            AS_HELP_STRING([--with-pcre2-force-compile],[Force compilation of bundled pcre2 source files]),
             [pcre2_force_compile="true"])
             
 AC_ARG_WITH([pcre2-include],
-            AC_HELP_STRING([--with-pcre2-include=INCLUDE_PATH],
-                           [the location of pcre2 header files]),
+            AS_HELP_STRING([--with-pcre2-include=INCLUDE_PATH],[the location of pcre2 header files]),
             [pcre2_include_path=$withval])
             
 AC_ARG_WITH([pcre2-lib],
-            AC_HELP_STRING([--with-pcre2-lib=LIB_PATH],
-                           [the location of pcre2 library files]),
+            AS_HELP_STRING([--with-pcre2-lib=LIB_PATH],[the location of pcre2 library files]),
             [pcre2_lib_path=$withval])
             
 AC_ARG_WITH([simd],
-            AC_HELP_STRING([--with-simd],
-                           [Manually select SIMD support (options: AVX2)]),
+            AS_HELP_STRING([--with-simd],[Manually select SIMD support (options: AVX2)]),
             [with_simd=$withval])
        
 
@@ -125,10 +120,9 @@ else
 fi
 
 if test xx$COMPILE_PCRE2 = "xxtrue"; then
-  INCLUDE_PATHS="${INCLUDE_PATHS} -DPCRE2_CODE_UNIT_WIDTH=8 -DHAVE_CONFIG_H -IPCRE2"
-  PCRE2_SHLIB="libSFPCRE2.a"
-  PCRE2_CLEAN="\$(LIBPCRE2) libSFPCRE2.a"
-  ADD_LIBS="${ADD_LIBS} -lSFPCRE2"
+  INCLUDE_PATHS="${INCLUDE_PATHS} -IPCRE2"
+  LIBPCRE2="\$(LIBPCRE2)"
+  PCRE2_BUNDLED="-DPCRE2_BUNDLED"
 fi
 
 if test xx$with_simd = "xxAVX2"; then
@@ -141,14 +135,11 @@ fi
 
 echo $ADD_LIBS
 echo $INCLUDE_PATHS
-echo $PCRE2_SHLIB
-echo $PCRE2_CLEAN
-echo $ADD_CFLAGS
+echo $LIBPCRE2
 
-AC_SUBST([ADD_CFLAGS], $ADD_CFLAGS)
 AC_SUBST([ADD_LIBS], $ADD_LIBS)
 AC_SUBST([INCLUDE_PATHS], $INCLUDE_PATHS)
-AC_SUBST([PCRE2_SHLIB], $PCRE2_SHLIB)
-AC_SUBST([PCRE2_CLEAN], $PCRE2_CLEAN)
+AC_SUBST([LIBPCRE2], $LIBPCRE2)
+AC_SUBST([PCRE2_BUNDLED], $PCRE2_BUNDLED)
 AC_CONFIG_FILES([src/Makevars])
 AC_OUTPUT
