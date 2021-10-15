@@ -1,5 +1,5 @@
-e89664a3cfa11927e734e78f98f87ed4 *ChangeLog
-e1c45ed1c0412bef20ef194c70ef34c2 *DESCRIPTION
+8d424c8c2f45f90252577402350b7469 *ChangeLog
+d4510b6ca47d4241af6f6b2034fd2930 *DESCRIPTION
 ea03317ce22abbe6df52085e300e4d92 *NAMESPACE
 2df6f5ba87567a63d9147a8ccac7da40 *R/RcppExportsCustom.R
 f3deecb494208f322ba8d7988cfa3c6c *R/sf_functions.r
@@ -12,9 +12,10 @@ fa27555aa8d4100121794611e430970d *build/vignette.rds
 9839545cd7d44d480bf1ba1205a815fa *configure.ac
 b1588d3bb4cb0e1f5a597d908f8c5b37 *inst/PCRE2_LICENSE.txt
 eddc7b384d69b617e1b5eed410e633ff *inst/doc/vignette.R
-c1500a1982c8d05c16d23eb0c6e322b8 *inst/doc/vignette.html
+23f86344faf4e92520f0c965145e7441 *inst/doc/vignette.html
 23a067c229682962592a1fade9a157ce *inst/doc/vignette.rmd
 136416e3fa88d8738390414f4d7e72f3 *inst/extra_tests/benchmark_test.r
+5ffb7edd2f129b912245979c4699bdeb *inst/icelandic_words_500_utf8.txt
 bdc213af0e6d65b4d2ed8895ed4fcfd9 *inst/include/sf_external.h
 6ade2f319f6adcfcf8e4e59df063afdd *inst/include/sf_internal.h
 85f32d0c387878c1b12d7ac49d097718 *man/convert_to_sf.Rd
@@ -116,6 +117,6 @@ b7f687d23a012d6eb3c72a353a084d7e *src/sf_functions.cpp
 7c5ad14a1247a22141ed18a8d232dd51 *src/xxhash/xxhash.c
 fd76e2facf9b35fdc18ce8ab9131a1bb *src/xxhash/xxhash.h
 7430883ce623223bd3e42505c77be71a *tests/tests.cpp
-39350b5813ba5a29203a3a34ab6772ce *tests/tests.r
+19d95a71409feffa9af51b14d00ddbd5 *tests/tests.r
 01317aaf6120b9c3a9a8d1ba2d219480 *vignettes/bench_v2.png
 23a067c229682962592a1fade9a157ce *vignettes/vignette.rmd

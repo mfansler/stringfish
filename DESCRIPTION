@@ -1,7 +1,7 @@
 Package: stringfish
 Title: Alt String Implementation
-Version: 0.15.3
-Date: 2021-10-9
+Version: 0.15.4
+Date: 2021-10-14
 Authors@R: c(
     person("Travers", "Ching", email = "traversc@gmail.com", role = c("aut", "cre", "cph")),
     person("Phillip", "Hazel", role = c("ctb"), comment = "Bundled PCRE2 code"),
@@ -28,7 +28,7 @@ Copyright: Copyright for the bundled 'PCRE2' library is held by
 URL: https://github.com/traversc/stringfish
 BugReports: https://github.com/traversc/stringfish/issues
 NeedsCompilation: yes
-Packaged: 2021-10-10 09:09:38 UTC; tching
+Packaged: 2021-10-15 08:19:57 UTC; tching
 Author: Travers Ching [aut, cre, cph],
   Phillip Hazel [ctb] (Bundled PCRE2 code),
   Zoltan Herczeg [ctb, cph] (Bundled PCRE2 code),
@@ -38,4 +38,4 @@ Author: Travers Ching [aut, cre, cph],
   Yann Collet [ctb, cph] (Yann Collet is the author of the bundled xxHash
     code)
 Repository: CRAN
-Date/Publication: 2021-10-10 09:50:06 UTC
+Date/Publication: 2021-10-15 10:40:02 UTC
