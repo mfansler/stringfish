@@ -10,6 +10,7 @@
 #if RCPP_PARALLEL_USE_TBB
 #include <tbb/concurrent_unordered_map.h>
 #include <tbb/task_arena.h>
+#include <tbb/enumerable_thread_specific.h>
 #endif
 #include <atomic>
 
@@ -38,20 +39,20 @@ bool get_is_utf8_locale() {return is_utf8_locale;}
 ////////////////////////////////////////////////////////////////////////////////
 // tbb helper functions
 
-#if RCPP_PARALLEL_USE_TBB
-inline void parallelFor2(std::size_t begin, std::size_t end, Worker& worker, std::size_t grainSize = 1, int nthreads = 1) {
-  int max_threads = tbb::task_scheduler_init::default_num_threads();
-  if(nthreads > max_threads) nthreads = max_threads;
-  tbb::task_arena limited(nthreads);
-  tbb::task_group tg;
-  limited.execute([&]{
-    tg.run([&]{
-      parallelFor(begin, end, worker, grainSize);
-    });
-  });
-  limited.execute([&]{ tg.wait(); });
-}
-#endif
+// #if RCPP_PARALLEL_USE_TBB
+// inline void parallelFor(std::size_t begin, std::size_t end, Worker& worker, std::size_t grainSize = 1, int nthreads = 1) {
+//   int max_threads = tbb::task_scheduler_init::default_num_threads();
+//   if(nthreads > max_threads) nthreads = max_threads;
+//   tbb::task_arena limited(nthreads);
+//   tbb::task_group tg;
+//   limited.execute([&]{
+//     tg.run([&]{
+//       parallelFor(begin, end, worker, grainSize);
+//     });
+//   });
+//   limited.execute([&]{ tg.wait(); });
+// }
+// #endif
 
 // [[Rcpp::export(rng = false)]]
 bool is_tbb() {
@@ -314,7 +315,7 @@ struct iconv_worker : public Worker {
 };
 #endif
 
-// [[Rcpp::export(rng = false)]]
+// [[Rcpp::export(rng = false, signature = {x, from, to, nthreads = getOption("stringfish.nthreads", 1L)})]]
 SEXP sf_iconv(SEXP x, const std::string from, const std::string to, int nthreads=1) {
   cetype_t encoding;
   if(to == "UTF-8") {
@@ -332,7 +333,7 @@ SEXP sf_iconv(SEXP x, const std::string from, const std::string to, int nthreads
   if(nthreads > 1) {
 #if RCPP_PARALLEL_USE_TBB
     iconv_worker w(iw, encoding, &rsi, ref);
-    parallelFor2(0, len, w, 100, nthreads);
+    parallelFor(0, len, w, 100, nthreads);
 #else
     throw std::runtime_error("RcppParallel TBB not supported");
 #endif
@@ -403,7 +404,7 @@ struct nchar_worker : public Worker {
 };
 #endif
 
-// [[Rcpp::export(rng = false)]]
+// [[Rcpp::export(rng = false, signature = {x, type = "chars", nthreads = getOption("stringfish.nthreads", 1L)})]]
 IntegerVector sf_nchar(SEXP x, const std::string type = "chars", const int nthreads = 1) {
   if((type != "chars") && (type != "bytes")) {
     throw std::runtime_error("type must be chars or bytes");
@@ -416,7 +417,7 @@ IntegerVector sf_nchar(SEXP x, const std::string type = "chars", const int nthre
   if(nthreads > 1) {
 #if RCPP_PARALLEL_USE_TBB
     nchar_worker w(&rsi, optr, type);
-    parallelFor2(0, len, w, 100, nthreads);
+    parallelFor(0, len, w, 100, nthreads);
 #else
     throw std::runtime_error("RcppParallel TBB not supported");
 #endif
@@ -521,7 +522,7 @@ struct substr_worker : public Worker {
   }
 };
 
-// [[Rcpp::export(rng = false)]]
+// [[Rcpp::export(rng = false, signature = {x, start, stop, nthreads = getOption("stringfish.nthreads", 1L)})]]
 SEXP sf_substr(SEXP x, IntegerVector start, IntegerVector stop, const int nthreads = 1) {
   size_t start_size = Rf_xlength(start);
   size_t stop_size = Rf_xlength(stop);
@@ -546,7 +547,7 @@ SEXP sf_substr(SEXP x, IntegerVector start, IntegerVector stop, const int nthrea
   if(nthreads > 1) {
 #if RCPP_PARALLEL_USE_TBB
     substr_worker w(&rsi, start_size, stop_size, start_ptr, stop_ptr, ref);
-    parallelFor2(0, len, w, 100, nthreads);
+    parallelFor(0, len, w, 100, nthreads);
 #else
     throw std::runtime_error("RcppParallel TBB not supported");
 #endif
@@ -633,7 +634,7 @@ SEXP c_sf_paste(List dots, SEXP sep, const int nthreads = 1) {
   if(nthreads > 1) {
 #if RCPP_PARALLEL_USE_TBB
     paste_worker w(dotlen, sep_string, rs, lens, singles, ref);
-    parallelFor2(0,maxlen,w, 100, nthreads);
+    parallelFor(0,maxlen,w, 100, nthreads);
 #else
     throw std::runtime_error("RcppParallel TBB not supported");
 #endif
@@ -782,7 +783,7 @@ void sf_writeLines(SEXP text, const std::string file, const std::string sep = "\
 
 
 ////////////////////////////////////////////////////////////////////////////////
-
+#if RCPP_PARALLEL_USE_TBB
 struct grepl_worker : public Worker {
   const std::string encode_mode;
   tbb::enumerable_thread_specific<iconv_wrapper> iw_latin1;
@@ -835,9 +836,10 @@ struct grepl_worker : public Worker {
     }
   }
 };
+#endif
 
-// [[Rcpp::export(rng = false)]]
-LogicalVector sf_grepl(SEXP subject, SEXP pattern, const std::string encode_mode = "auto", const bool fixed = false ,const int nthreads = 1) {
+// [[Rcpp::export(rng = false, signature = {subject, pattern, encode_mode = "auto", fixed = FALSE, nthreads = getOption("stringfish.nthreads", 1L)})]]
+LogicalVector sf_grepl(SEXP subject, SEXP pattern, const std::string encode_mode = "auto", const bool fixed = false, const int nthreads = 1) {
   if(encode_mode != "auto" && encode_mode != "byte" && encode_mode != "UTF-8") {
     throw std::runtime_error("encode_mode must be auto, byte or UTF-8");
   }
@@ -878,7 +880,7 @@ LogicalVector sf_grepl(SEXP subject, SEXP pattern, const std::string encode_mode
   if(nthreads > 1) {
 #if RCPP_PARALLEL_USE_TBB
     grepl_worker w(encode_mode, iw_latin1, iw_native, pm, &cr, outptr);
-    parallelFor2(0, len, w, 100, nthreads);
+    parallelFor(0, len, w, 100, nthreads);
 #else
     throw std::runtime_error("RcppParallel TBB not supported");
 #endif
@@ -1001,7 +1003,7 @@ struct split_worker : public Worker {
 };
 #endif
 
-// [[Rcpp::export(rng = false)]]
+// [[Rcpp::export(rng = false, signature = {subject, split, encode_mode = "auto", fixed = FALSE, nthreads = getOption("stringfish.nthreads", 1L)})]]
 SEXP sf_split(SEXP subject, SEXP split, const std::string encode_mode = "auto", const bool fixed = false, const int nthreads = 1) {
   
   SEXP pattern_element = STRING_ELT(split, 0);
@@ -1046,7 +1048,7 @@ SEXP sf_split(SEXP subject, SEXP split, const std::string encode_mode = "auto", 
       refs[i] = &sf_vec_data_ref(svec);
     }
     split_worker w(encode_mode, pattern_enc, iw_latin1, iw_native, pm, std::move(refs), &cr);
-    parallelFor2(0, len, w, 100, nthreads);
+    parallelFor(0, len, w, 100, nthreads);
 #else
     throw std::runtime_error("RcppParallel TBB not supported");
 #endif
@@ -1098,7 +1100,7 @@ SEXP sf_split(SEXP subject, SEXP split, const std::string encode_mode = "auto", 
 
 ////////////////////////////////////////////////////////////////////////////////
 
-
+#if RCPP_PARALLEL_USE_TBB
 struct gsub_worker : public Worker {
   const std::string encode_mode;
   tbb::enumerable_thread_specific<iconv_wrapper> iw_latin1;
@@ -1156,9 +1158,9 @@ struct gsub_worker : public Worker {
     }
   }
 };
+#endif
 
-
-// [[Rcpp::export(rng = false)]]
+// [[Rcpp::export(rng = false, signature = {subject, pattern, replacement, encode_mode = "auto", fixed = FALSE, nthreads = getOption("stringfish.nthreads", 1L)})]]
 SEXP sf_gsub(SEXP subject, SEXP pattern, SEXP replacement, const std::string encode_mode = "auto", const bool fixed = false, const int nthreads = 1) {
   SEXP pattern_element = STRING_ELT(pattern, 0);
   cetype_t pattern_enc = Rf_getCharCE(pattern_element);
@@ -1210,7 +1212,7 @@ SEXP sf_gsub(SEXP subject, SEXP pattern, SEXP replacement, const std::string enc
   if(nthreads > 1) {
 #if RCPP_PARALLEL_USE_TBB
     gsub_worker w(encode_mode, iw_latin1, iw_native, ps, pattern_enc, replacement_enc, &cr, ref);
-    parallelFor2(0, len, w, 100, nthreads);
+    parallelFor(0, len, w, 100, nthreads);
 #else
     throw std::runtime_error("RcppParallel TBB not supported");
 #endif
@@ -1345,8 +1347,8 @@ struct rstring_info_hash {
     return XXH3_64bits(s.ptr, s.len);
   }
 };
+#if RCPP_PARALLEL_USE_TBB
 using tbb_rstring_map = tbb::concurrent_unordered_map<RStringIndexer::rstring_info, tbb::atomic<int>, rstring_info_hash>;
-
 // hash filler
 struct hash_fill_worker : public Worker {
   tbb_rstring_map * table_hash;
@@ -1388,9 +1390,9 @@ struct hash_search_worker : public Worker {
     }
   }
 };
+#endif
 
-
-// [[Rcpp::export(rng = false)]]
+// [[Rcpp::export(rng = false, signature = {x, table, nthreads = getOption("stringfish.nthreads", 1L)})]]
 IntegerVector sf_match(SEXP x, SEXP table, const int nthreads = 1) {
   RStringIndexer cr(table);
   size_t len = cr.size();
@@ -1405,9 +1407,9 @@ IntegerVector sf_match(SEXP x, SEXP table, const int nthreads = 1) {
 #if RCPP_PARALLEL_USE_TBB
     tbb_rstring_map table_hash;
     hash_fill_worker w1(&table_hash, &cr);
-    parallelFor2(0, len, w1, 100, nthreads);
+    parallelFor(0, len, w1, 100, nthreads);
     hash_search_worker w2(&table_hash, &xr, retp);
-    parallelFor2(0, xlen, w2, 100, nthreads);
+    parallelFor(0, xlen, w2, 100, nthreads);
 #else
     throw std::runtime_error("RcppParallel TBB not supported");
 #endif
@@ -1459,7 +1461,7 @@ struct compare_worker : public Worker {
 };
 
 
-// [[Rcpp::export(rng = false)]]
+// [[Rcpp::export(rng = false, signature = {x, y, nthreads = getOption("stringfish.nthreads", 1L)})]]
 LogicalVector sf_compare(SEXP x, SEXP y, const int nthreads = 1) {
   RStringIndexer xr(x);
   RStringIndexer yr(y);
@@ -1475,7 +1477,7 @@ LogicalVector sf_compare(SEXP x, SEXP y, const int nthreads = 1) {
   if(nthreads > 1) {
 #if RCPP_PARALLEL_USE_TBB
     compare_worker w(xr, yr, xlen, ylen, out);
-    parallelFor2(0, xlen, w, 100, nthreads);
+    parallelFor(0, xlen, w, 100, nthreads);
 #else
     throw std::runtime_error("RcppParallel TBB not supported");
 #endif
