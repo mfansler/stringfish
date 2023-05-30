@@ -1,3 +1,8 @@
+Version 0.15.8 (2023-5-29)
+   * Fix warn message in R 4.3+ "warning: function declaration isn’t a prototype [-Wstrict-prototypes]"
+   * Remove C++11 SystemRequirements per new CRAN guidelines
+   * Switch to `std::atomic` instead of `tbb::atomic` due to deprecation (https://github.com/traversc/stringfish/issues/19)
+
 Version 0.15.7 (2022-2-21)
    * Switch to using Rcpp's new `signature` attribute to define default parameters
    * Use more accurate language in configure script
